@@ -1,0 +1,66 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+void state0(const string &w, int i); // Starting state
+void state1(const string &w, int i, char first1, char first2); // To check first two characters
+void state2(const string &w, int i, char first1, char first2); // To check last two characters
+
+// Simulates the finite automaton (FA)
+void simulateFA(const string &w) {
+    cout << "Starting simulation of the finite automaton.\n";
+    if (w.length() < 4) {
+        cout << "String is rejected (Length is less than 4)\n";
+        return;
+    }
+    state0(w, 0); // Begin at state0
+}
+
+// State 0: Reads the first character and prepares to check the first two characters
+void state0(const string &w, int i) {
+    cout << "State 0: Reading first character '" << w[i] << "'\n";
+    if (w[i] != 'a' && w[i] != 'b') {
+        cout << "Invalid character encountered. String is rejected.\n";
+        return;
+    }
+    cout << "Transitioning to State 1 to check the first two characters.\n";
+    state1(w, i + 1, w[i], w[i + 1]);
+}
+
+// State 1: Continues reading the string until it reaches the last two characters
+void state1(const string &w, int i, char first1, char first2) {
+    cout << "State 1: Reading character '" << w[i] << "'\n";
+    if (w[i] != 'a' && w[i] != 'b') {
+        cout << "Invalid character encountered. String is rejected.\n";
+        return;
+    }
+    if (i >= w.length() - 2) {
+        // When reaching the last two characters, transition to state2
+        cout << "Reached last two characters. Transitioning to State 2.\n";
+        state2(w, i, first1, first2);
+    } else {
+        // Continue reading characters in state1
+        cout << "Continuing in State 1 to process the string.\n";
+        state1(w, i + 1, first1, first2);
+    }
+}
+
+// State 2: Compares the first two characters with the last two
+void state2(const string &w, int i, char first1, char first2) {
+    cout << "State 2: Comparing last two characters with the first two.\n";
+    cout << "First two characters: '" << first1 << "' and '" << first2 << "'\n";
+    cout << "Last two characters: '" << w[i] << "' and '" << w[i + 1] << "'\n";
+    if (w[i] == first1 && w[i + 1] == first2) {
+        cout << "String is accepted (First two characters match last two).\n";
+    } else {
+        cout << "String is rejected (First two characters do not match last two).\n";
+    }
+}
+
+int main() {
+    string input;
+    cout << "Enter a string over {a, b}: ";
+    cin >> input;
+    simulateFA(input);
+    return 0;
+}

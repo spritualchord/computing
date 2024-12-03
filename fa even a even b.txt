@@ -1,0 +1,104 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Function prototypes for state transitions
+void state0(const string &w, int i);
+void state1(const string &w, int i);
+void state2(const string &w, int i);
+void state3(const string &w, int i);
+
+// Simulate the FA
+void simulateFA(const string &w) {
+    if (w.empty()) {
+        cout << "Input string is empty, which is accepted as both 'a' and 'b' counts are even (0)." << endl;
+        return;  // Accept the string immediately
+    }
+    state0(w, 0); // Start from State 0
+}
+
+// Initial state (State 0)
+void state0(const string &w, int i) {
+    cout << "State 0: Reading '" << w[i] << "'" << endl;
+    if (i == w.length()) {
+        cout << "String is accepted (both 'a' and 'b' counts are even)." << endl;
+        return;
+    }
+    if (w[i] == 'a') {
+        cout << "Transitioning from State 0 to State 1 on input 'a'." << endl;
+        state1(w, i + 1); // Transition to State 1
+    } else if (w[i] == 'b') {
+        cout << "Transitioning from State 0 to State 2 on input 'b'." << endl;
+        state2(w, i + 1); // Transition to State 2
+    } else {
+        cout << "Invalid input. String is rejected." << endl;
+        return;
+    }
+}
+
+// State 1: Odd 'a's, Even 'b's
+void state1(const string &w, int i) {
+    cout << "State 1: Reading '" << w[i] << "'" << endl;
+    if (i == w.length()) {
+        cout << "String is rejected (odd 'a' count and even 'b' count)." << endl;
+        return;
+    }
+    if (w[i] == 'a') {
+        cout << "Transitioning from State 1 to State 0 on input 'a'." << endl;
+        state0(w, i + 1); // Transition to State 0 (even 'a' count)
+    } else if (w[i] == 'b') {
+        cout << "Transitioning from State 1 to State 3 on input 'b'." << endl;
+        state3(w, i + 1); // Transition to State 3 (odd 'a' and 'b' counts)
+    } else {
+        cout << "Invalid input. String is rejected." << endl;
+        return;
+    }
+}
+
+// State 2: Even 'a's, Odd 'b's
+void state2(const string &w, int i) {
+    cout << "State 2: Reading '" << w[i] << "'" << endl;
+    if (i == w.length()) {
+        cout << "String is rejected (even 'a' count and odd 'b' count)." << endl;
+        return;
+    }
+    if (w[i] == 'a') {
+        cout << "Transitioning from State 2 to State 3 on input 'a'." << endl;
+        state3(w, i + 1); // Transition to State 3 (odd 'a' and 'b' counts)
+    } else if (w[i] == 'b') {
+        cout << "Transitioning from State 2 to State 0 on input 'b'." << endl;
+        state0(w, i + 1); // Transition to State 0 (even 'a' and 'b' counts)
+    } else {
+        cout << "Invalid input. String is rejected." << endl;
+        return;
+    }
+}
+
+// State 3: Odd 'a's, Odd 'b's
+void state3(const string &w, int i) {
+    cout << "State 3: Reading '" << w[i] << "'" << endl;
+    if (i == w.length()) {
+        cout << "String is rejected (odd 'a' and 'b' counts)." << endl;
+        return;
+    }
+    if (w[i] == 'a') {
+        cout << "Transitioning from State 3 to State 2 on input 'a'." << endl;
+        state2(w, i + 1); // Transition to State 2 (even 'a' and odd 'b' counts)
+    } else if (w[i] == 'b') {
+        cout << "Transitioning from State 3 to State 1 on input 'b'." << endl;
+        state1(w, i + 1); // Transition to State 1 (odd 'a' and even 'b' counts)
+    } else {
+        cout << "Invalid input. String is rejected." << endl;
+        return;
+    }
+}
+
+// Main function
+int main() {
+    string input;
+    cout << "Enter a string (containing only 'a' and 'b'): ";
+    getline(cin, input);  // Read the full input string, including spaces (if any)
+    
+    simulateFA(input); // Simulate the FA
+    return 0;
+}

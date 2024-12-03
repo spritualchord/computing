@@ -1,0 +1,147 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+void state1(string s, int i);
+void state2(string s, int i);
+void state3(string s, int i);
+int count = 0;
+
+void prints(string s)
+{
+    for (auto &i : s)
+    {
+        cout << i;
+    }
+    cout << endl;
+}
+bool checks(string s)
+{
+    for (int i = 0; i < s.length(); i++)
+    {
+        if (!(s[i] == 'a' || s[i] == 'b'))
+        {
+            cout<<"'"<< s[i]<<"'" << " is not a part of allowed symbols"<<endl;
+            cout << "String is Rejected";
+            return false;
+        }
+    }
+    return true;
+}
+
+void state1(string s, int i)
+{
+    cout << endl;
+    cout << "In State 1" << endl;
+    if (s.length() != i)
+    {
+        prints(s);
+        cout << "Element at position " << i + 1 << " i.e., '" << s[i] << "' is processed in State 1" << endl;
+    }
+
+    if (s.length() == i)
+    {
+        cout << "Our string ends in State 2, which is a final state, so no double 'a' and our " << endl;
+        cout << "String is accepted" << endl;
+        return;
+    }
+    else
+    {
+        if (s[i] == 'b')
+        {
+            cout << "It is 'b', so transition to State 1 back again" << endl;
+            state1(s, i + 1);
+        }
+        if (s[i] == 'a')
+        {
+            cout << "It is 'a', so transition to State 2" << endl;
+            state2(s, i + 1);
+        }
+    }
+}
+
+void state2(string s, int i)
+{
+    cout << endl;
+    cout << "In State 2" << endl;
+    if (i != s.length())
+    {
+        prints(s);
+        cout << "Element at position " << i + 1 << " i.e., '" << s[i] << "' is processed in State 2" << endl;
+    }
+
+    if (s.length() == i)
+    {
+        cout << "Our string ends in State 2, which is a final state, so no double 'a' and our " << endl;
+
+        cout << "String is accepted" << endl;
+        return;
+    }
+    else
+    {
+        if (s[i] == 'b')
+        {
+            cout << "It is 'b', so transition to State 1" << endl;
+            state1(s, i + 1);
+        }
+        else
+        {
+            cout << "It is 'a', so transition to State 3" << endl;
+            cout << "double a is found so going to endless loop of non final state i.e state 3" << endl;
+            state3(s, i + 1);
+        }
+    }
+}
+
+void state3(string s, int i)
+{
+    cout << endl;
+    cout << "In State 3" << endl;
+
+    if (i != s.length())
+    {
+        prints(s);
+        cout << "Element at position " << i + 1 << " i.e., '" << s[i] << "' is processed in State 3" << endl;
+    }
+    if (s.length() == i)
+    {
+        cout << "Our string ends in State 3, which is a non-final state with a self-loop, so ." << endl;
+        cout << "String is Rejected" << endl;
+        return;
+    }
+    else
+    {
+        if (s[i] == 'b')
+        {
+            cout << "It is 'b', so remain in State 3" << endl;
+            state3(s, i + 1);
+        }
+        else
+        {
+            cout << "It is 'a', so remain in State 3" << endl;
+            state3(s, i + 1);
+        }
+    }
+}
+
+int main(int argc, char const *argv[])
+{
+    cout << "Set of allowed symbols: {a, b}" << endl;
+    cout << "Finite Automaton (FA) that does not accept consecutive 'a's" << endl
+         << endl;
+    cout << "State Descriptions:\n\n";
+    cout << "State 1 (Initial & Final): Initial and final state, stays on 'b', moves to State 2 on 'a'.\n";
+    cout << "State 2 (Final ): Moves to State 1 on 'b', moves to State 3 on 'a'.\n";
+    cout << "State 3: Rejecting state, stays here regardless of input.\n\n";
+    string s;
+    cout << "Enter the string to check wether accpted by the above FA or Rejected ";
+    cin >> s;
+    if (checks(s))
+    {
+        cout << "We will start with our initial state, State 1, and process the first character of the string. ";
+        cout << "Then, we will process the remaining characters in their respective states based on the transitions.\n\n";
+        state1(s, 0);
+    }
+
+    return 0;
+}

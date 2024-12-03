@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Function prototypes for state transitions
+void state0(const string &w, int i);
+void state1(const string &w, int i);
+void state2(const string &w, int i);
+
+// Simulate the FA
+void simulateFA(const string &w) {
+    cout << "Simulation started for string: " << w << endl;
+    state0(w, 0); // Start from State 0
+}
+
+// Initial state (State 0)
+void state0(const string &w, int i) {
+    cout << "State 0: Reading '" << (i < w.length() ? w[i] : ' ') << "'" << endl;
+    if (i == w.length()) {
+        cout << "String is rejected because it did not start with 'a'." << endl;
+        return;
+    }
+    if (w[i] == 'a') {
+        cout << "Transitioning from State 0 to State 1 on input 'a'." << endl;
+        state1(w, i + 1); // Transition to State 1
+    } else {
+        cout << "Invalid input. String is rejected because it did not start with 'a'." << endl;
+    }
+}
+
+// Intermediate state (State 1)
+void state1(const string &w, int i) {
+    if (i == w.length()) {
+        cout << "String is rejected because it did not end with 'b'." << endl;
+        return;
+    }
+    cout << "State 1: Reading '" << w[i] << "'" << endl;
+    if (w[i] == 'a' || w[i] == 'b') {
+        if (i == w.length() - 1 && w[i] == 'b') {
+            cout << "Transitioning from State 1 to State 2 on input 'b'." << endl;
+            state2(w, i + 1); // Transition to State 2 on final 'b'
+        } else {
+            cout << "Remaining in State 1 on input '" << w[i] << "'." << endl;
+            state1(w, i + 1); // Stay in State 1
+        }
+    } else {
+        cout << "Invalid input. String is rejected because '" << w[i] << "' is not in the alphabet {a, b}." << endl;
+    }
+}
+
+// Final state (State 2)
+void state2(const string &w, int i) {
+    cout << "State 2: Final state reached." << endl;
+    if (i == w.length()) {
+        cout << "String is accepted because it starts with 'a', ends with 'b', and follows the pattern a(a+b)*b." << endl;
+    } else {
+        cout << "String is rejected because there are extra characters after the final state." << endl;
+    }
+}
+
+// Main function
+int main() {
+    string input;
+    cout << "Enter a string (containing only 'a' and 'b'): ";
+    cin >> input;
+    simulateFA(input); // Simulate the FA
+    return 0;
+}
